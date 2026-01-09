@@ -1,0 +1,10 @@
+# Virtual environments
+sassvenv/
+venv/
+.venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.*

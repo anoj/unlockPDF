@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Unminifier - PDF Tools Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation - matching your existing style */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-wrapper {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .control-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .type-selector {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .type-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid transparent;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .type-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .type-btn.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transform: scale(1.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-custom {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+        }
+
+        .btn-danger-custom {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-info-custom {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .editor-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .editor-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .code-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            background: #fafafa;
+        }
+
+        .code-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert-custom {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            animation: slideIn 0.5s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Footer - matching your existing style */
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 3rem 0 1rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p, .footer-section li {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #7f8c8d;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 1rem;
+            text-align: center;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 992px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">🔓</span>
+                PDF Tools Pro
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/tools" class="nav-link">Tools</a></li>
+                <li><a href="/unminify" class="nav-link active">Unminify</a></li>
+                <li><a href="#" class="nav-link">About</a></li>
+                <li><a href="#" class="nav-link">Privacy</a></li>
+                <li><a href="#" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="container">
+            <div class="hero-section">
+                <h1 class="hero-title">🎨 Code Unminifier</h1>
+                <p class="hero-subtitle">Transform minified code into readable, well-formatted code instantly</p>
+            </div>
+
+            <div class="control-panel">
+                <div class="type-selector">
+                    <button class="type-btn active" data-type="auto">
+                        <i class="fas fa-magic"></i> Auto Detect
+                    </button>
+                    <button class="type-btn" data-type="javascript">
+                        <i class="fab fa-js"></i> JavaScript
+                    </button>
+                    <button class="type-btn" data-type="css">
+                        <i class="fab fa-css3"></i> CSS
+                    </button>
+                    <button class="type-btn" data-type="html">
+                        <i class="fab fa-html5"></i> HTML
+                    </button>
+                    <button class="type-btn" data-type="json">
+                        <i class="fas fa-database"></i> JSON
+                    </button>
+                    <button class="type-btn" data-type="xml">
+                        <i class="fas fa-code"></i> XML
+                    </button>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="unminifyBtn" class="btn-custom btn-primary-custom">
+                        <i class="fas fa-magic"></i> Unminify Code
+                    </button>
+                    <div class="file-upload-wrapper">
+                        <button class="btn-custom btn-success-custom">
+                            <i class="fas fa-upload"></i> Upload File
+                        </button>
+                        <input type="file" id="fileInput" class="file-upload-input" accept=".js,.css,.html,.json,.xml">
+                    </div>
+                    <button id="copyBtn" class="btn-custom btn-info-custom">
+                        <i class="fas fa-copy"></i> Copy Result
+                    </button>
+                    <button id="downloadBtn" class="btn-custom btn-success-custom">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button id="clearBtn" class="btn-custom btn-danger-custom">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+            </div>
+
+            <div class="editor-container">
+                <div class="editor-card">
+                    <div class="editor-header">
+                        <h3 class="editor-title">
+                            <i class="fas fa-file-code"></i> Input (Minified)
+                        </h3>
+                        <span id="inputChars" class="text-muted">0 characters</span>
+                    </div>
+                    <textarea id="inputCode" class="code-textarea" placeholder="Paste your minified code here..."></textarea>
+                </div>
+
+                <div class="editor-card">
+                    <div class="editor-header">
+                        <h3 class="editor-title">
+                            <i class="fas fa-file-alt"></i> Output (Beautified)
+                        </h3>
+                        <span id="outputChars" class="text-muted">0 characters</span>
+                    </div>
+                    <textarea id="outputCode" class="code-textarea" placeholder="Beautified code will appear here..." readonly></textarea>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value" id="reductionRate">0%</div>
+                    <div class="stat-label">Size Increase</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="lineCount">0</div>
+                    <div class="stat-label">Lines of Code</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="processingTime">0ms</div>
+                    <div class="stat-label">Processing Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="detectedType">-</div>
+                    <div class="stat-label">Detected Type</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PDF Tools Pro</h3>
+                    <p>Professional PDF processing tools for individuals and businesses. Secure, fast, and reliable PDF solutions at your fingertips.</p>
+                    <p style="margin-top: 1rem;">© 2024 PDF Tools Pro. All rights reserved.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Tools</h3>
+                    <ul>
+                        <li><a href="/">Remove Password</a></li>
+                        <li><a href="/tools">All Tools</a></li>
+                        <li><a href="/unminify">Code Unminifier</a></li>
+                        <li><a href="#">Merge PDFs</a></li>
+                        <li><a href="#">Split PDF</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Bug Report</a></li>
+                        <li><a href="#">Feature Request</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">GDPR</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with ❤️ for secure and efficient PDF processing</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        let selectedType = 'auto';
+        let currentFileName = 'beautified_code.txt';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Type selector buttons
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedType = this.dataset.type;
+                });
+            });
+
+            // Input character counter
+            document.getElementById('inputCode').addEventListener('input', function() {
+                document.getElementById('inputChars').textContent = this.value.length + ' characters';
+            });
+
+            // Unminify button
+            document.getElementById('unminifyBtn').addEventListener('click', unminifyCode);
+
+            // File upload
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+
+            // Copy button
+            document.getElementById('copyBtn').addEventListener('click', copyResult);
+
+            // Download button
+            document.getElementById('downloadBtn').addEventListener('click', downloadResult);
+
+            // Clear button
+            document.getElementById('clearBtn').addEventListener('click', clearAll);
+        });
+
+        async function unminifyCode() {
+            const inputCode = document.getElementById('inputCode').value;
+            
+            if (!inputCode.trim()) {
+                showAlert('Please enter some code to unminify', 'error');
+                return;
+            }
+
+            showLoading(true);
+            const startTime = performance.now();
+
+            try {
+                const response = await fetch('/unminify/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        code: inputCode,
+                        type: selectedType === 'auto' ? null : selectedType
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    const outputCode = data.result;
+                    document.getElementById('outputCode').value = outputCode;
+                    document.getElementById('outputChars').textContent = outputCode.length + ' characters';
+                    
+                    // Update stats
+                    const endTime = performance.now();
+                    updateStats(inputCode, outputCode, endTime - startTime, data.type);
+                    
+                    showAlert('Code beautified successfully!', 'success');
+                } else {
+                    showAlert(data.error || 'Error unminifying code', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showLoading(true);
+            const startTime = performance.now();
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/unminify/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Set input
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('inputCode').value = e.target.result;
+                        document.getElementById('inputChars').textContent = e.target.result.length + ' characters';
+                    };
+                    reader.readAsText(file);
+
+                    // Set output
+                    const outputCode = data.result;
+                    document.getElementById('outputCode').value = outputCode;
+                    document.getElementById('outputChars').textContent = outputCode.length + ' characters';
+                    
+                    // Update filename for download
+                    currentFileName = 'beautified_' + data.filename;
+                    
+                    // Update stats
+                    const endTime = performance.now();
+                    const fileContent = await file.text();
+                    updateStats(fileContent, outputCode, endTime - startTime, data.type);
+                    
+                    showAlert(`File "${data.filename}" beautified successfully!`, 'success');
+                } else {
+                    showAlert(data.error || 'Error processing file', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+                event.target.value = ''; // Reset file input
+            }
+        }
+
+        function updateStats(input, output, processingTime, detectedType) {
+            // Size increase
+            const increase = ((output.length - input.length) / input.length * 100).toFixed(1);
+            document.getElementById('reductionRate').textContent = increase > 0 ? `+${increase}%` : `${increase}%`;
+            
+            // Line count
+            const lines = output.split('\n').length;
+            document.getElementById('lineCount').textContent = lines;
+            
+            // Processing time
+            document.getElementById('processingTime').textContent = Math.round(processingTime) + 'ms';
+            
+            // Detected type
+            document.getElementById('detectedType').textContent = detectedType.toUpperCase();
+        }
+
+        function copyResult() {
+            const outputCode = document.getElementById('outputCode').value;
+            
+            if (!outputCode) {
+                showAlert('No code to copy', 'error');
+                return;
+            }
+
+            navigator.clipboard.writeText(outputCode).then(() => {
+                showAlert('Code copied to clipboard!', 'success');
+            }).catch(() => {
+                showAlert('Failed to copy code', 'error');
+            });
+        }
+
+        function downloadResult() {
+            const outputCode = document.getElementById('outputCode').value;
+            
+            if (!outputCode) {
+                showAlert('No code to download', 'error');
+                return;
+            }
+
+            const blob = new Blob([outputCode], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showAlert('File downloaded successfully!', 'success');
+        }
+
+        function clearAll() {
+            document.getElementById('inputCode').value = '';
+            document.getElementById('outputCode').value = '';
+            document.getElementById('inputChars').textContent = '0 characters';
+            document.getElementById('outputChars').textContent = '0 characters';
+            document.getElementById('reductionRate').textContent = '0%';
+            document.getElementById('lineCount').textContent = '0';
+            document.getElementById('processingTime').textContent = '0ms';
+            document.getElementById('detectedType').textContent = '-';
+            showAlert('All cleared!', 'success');
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-custom alert-${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                ${message}
+            `;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideIn 0.5s ease reverse';
+                setTimeout(() => {
+                    document.body.removeChild(alertDiv);
+                }, 500);
+            }, 3000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + Enter to unminify
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('unminifyBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
